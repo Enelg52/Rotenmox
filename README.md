@@ -528,7 +528,7 @@ from absl import flags
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_enum('task', None, ['start', 'stop','create','remove','list'], 'Task to do')
+flags.DEFINE_enum('task', None, ['start', 'stop','create','remove','list', 'destroy'], 'Task to do')
 flags.DEFINE_integer('number', None, 'Number of instance')
 
 def getIP(id):
@@ -660,10 +660,34 @@ def main(ARGV):
             out = clone(pentesterlab,x)
             print(f"ID : {x} Created")
 
+        print("\n==Start some pentesterlabs==")
+        for x in range(200,200+FLAGS.number):
+            out = startLxc(x)
+            #Wait for dhcp
+            time.sleep(7)
+            ip = getIP(x)
+            if out == 0:
+                print(f"ID : {x} IP : {ip}".rstrip())
+                print("Username: root   Password: Pa$$w0rd")
+            else:
+                print(f'Error starting container {x}')
+
         print("\n==Creating some attacking machines==")
         for x in range(300,300+FLAGS.number):
             out = clone(attacking,x)
             print(f"ID : {x} Created")
+
+        print("\n==Start some attacking machines==")
+        for x in range(300,300+FLAGS.number):
+            out = startLxc(x)
+            #Wait for dhcp
+            time.sleep(7)
+            ip = getIP(x)
+            if out == 0:
+                print(f"ID : {x} IP : {ip}".rstrip())
+                print("Username: root   Password: Pa$$w0rd")
+            else:
+                print(f'Error starting container {x}')
         return
     if FLAGS.task == "remove":
         print("\n==Remove some pentesterlabs==")
@@ -676,6 +700,23 @@ def main(ARGV):
             out = remove(x)
             print(f"ID : {x} Removed")
         return
+
+    if FLAGS.task == "destroy":
+        print("\n==Destroy some pentesterlabs==")
+        for x in range(200,200+FLAGS.number):
+            out = stopLxc(x)
+            print(f"ID : {x} Stopped")
+        for x in range(200,200+FLAGS.number):
+            out = remove(x)
+            print(f"ID : {x} Removed")
+
+        print("\n==Destroy some attacking machines==")
+        for x in range(300, 300+FLAGS.number):
+            out = stopLxc(x)
+            print(f"ID : {x} Stopped")
+        for x in range(300, 300+FLAGS.number):
+            out = remove(x)
+            print(f"ID : {x} Removed")
 
 
 if __name__ == "__main__":

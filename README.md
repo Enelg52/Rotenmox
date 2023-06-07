@@ -2,9 +2,6 @@
 
 <img src="./assets/image-20230601090710647.png" alt="image-20230601090710647" style="zoom: 67%;" />
 
-## Table of content
-
-[TOC]
 
 # How to use the CLI (Command Line Interface)
 
